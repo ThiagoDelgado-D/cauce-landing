@@ -3,7 +3,7 @@ import { createAppWindow, windowHeight, windowLayout } from './hero/app-window';
 import { createStudyCards } from './hero/cards';
 import { GROUND_Y, createLandscape } from './hero/landscape';
 import { createLights } from './hero/lights';
-import { clamp01, easeOutCubic } from './hero/motion';
+import { clamp01, easeInOutCubic, easeOutCubic, smoothstep } from './hero/motion';
 import { palette } from './hero/palette';
 import { createHeroProgress } from './hero/progress';
 
@@ -12,6 +12,9 @@ const BELOW_FOLD_SHARE = 0.2;
 const WIDE_WIDTH_SHARE = 0.62;
 const NARROW_WIDTH_SHARE = 0.86;
 const RIPPLE_INTERVAL_MS = 140;
+const FILLED_WIDTH_SHARE = 0.88;
+const FILLED_HEIGHT_SHARE = 0.8;
+const COPY_LIFT_PX = 60;
 const RESTING_TILT = -0.12;
 const LYING_TILT = -0.95;
 const RISE_DROP = 1.8;
@@ -46,6 +49,7 @@ export function mountHeroScene(
   const lights = createLights(scene, appWindow.group);
   const progress = createHeroProgress(section);
   const rest = { y: 0, scale: 1 };
+  const filled = { y: 0, scale: 1 };
 
   const ray = new Vector3();
   const worldYAt = (pixelY: number, height: number) => {
@@ -65,15 +69,30 @@ export function mountHeroScene(
     );
     rest.scale = scale;
     rest.y = top - (windowHeight * scale) / 2;
+    filled.scale = Math.min(
+      (visibleWidth * FILLED_WIDTH_SHARE) / windowLayout.width,
+      ((worldYAt(0, height) - worldYAt(height, height)) * FILLED_HEIGHT_SHARE) / windowHeight,
+    );
+    filled.y = worldYAt(height / 2, height);
     cards.setSpread(Math.min(1, Math.max(0.45, camera.aspect / 1.6)));
   };
 
-  const placeRisingWindow = (assembly: number) => {
+  const placeWindow3d = (assembly: number, handoff: number) => {
     const rise = easeOutCubic(clamp01(assembly / 0.5));
+    const grow = easeInOutCubic(handoff);
     const group = appWindow.group;
-    group.position.set(0, rest.y - RISE_DROP * (1 - rise), -RISE_DEPTH * (1 - rise));
-    group.rotation.x = LYING_TILT + (RESTING_TILT - LYING_TILT) * rise;
-    group.scale.setScalar(rest.scale * (0.88 + 0.12 * rise));
+    const risingY = rest.y - RISE_DROP * (1 - rise);
+    const risingScale = rest.scale * (0.88 + 0.12 * rise);
+    group.position.set(0, risingY + (filled.y - risingY) * grow, -RISE_DEPTH * (1 - rise) * (1 - grow));
+    group.rotation.x = (LYING_TILT + (RESTING_TILT - LYING_TILT) * rise) * (1 - grow);
+    group.scale.setScalar(risingScale + (filled.scale - risingScale) * grow);
+  };
+
+  const fadeCopy = (handoff: number) => {
+    const fade = smoothstep(0, 0.55, handoff);
+    copy.style.opacity = String(1 - fade);
+    copy.style.transform = `translateY(${-handoff * COPY_LIFT_PX}px)`;
+    copy.style.visibility = fade >= 0.999 ? 'hidden' : '';
   };
 
   const resize = () => {
@@ -131,10 +150,11 @@ export function mountHeroScene(
     clock = time;
 
     progress.update(now, delta);
-    placeRisingWindow(progress.assembly);
-    cards.update(progress.assembly, time);
-    lights.update(progress.assembly);
-    landscape.update(time, lights.glow);
+    placeWindow3d(progress.assembly, progress.handoff);
+    fadeCopy(progress.handoff);
+    cards.update(progress.assembly, time, progress.handoff);
+    lights.update(progress.assembly, progress.handoff);
+    landscape.update(time, lights.glow, progress.handoff);
     renderer.render(scene, camera);
   });
   return true;

@@ -197,7 +197,7 @@ interface Card {
 
 export interface StudyCards {
   setSpread(spread: number): void;
-  update(assembly: number, time: number): void;
+  update(assembly: number, time: number, handoff: number): void;
   redraw(): void;
 }
 
@@ -268,7 +268,7 @@ export function createStudyCards(scene: Scene, windowGroup: Group): StudyCards {
     setSpread(value) {
       spread = value;
     },
-    update(assembly, time) {
+    update(assembly, time, handoff) {
       windowGroup.updateMatrixWorld();
       windowGroup.getWorldQuaternion(windowRotation);
       const windowScale = windowGroup.scale.x;
@@ -292,7 +292,7 @@ export function createStudyCards(scene: Scene, windowGroup: Group): StudyCards {
         const sinceLanding = landed ? time - card.landedAt : 0;
 
         card.card.material.opacity = landed ? Math.max(0, 1 - sinceLanding * 5) : 1;
-        card.card.visible = card.card.material.opacity > 0.01;
+        card.card.visible = card.card.material.opacity > 0.01 && handoff < 0.02;
         card.filled.material.opacity = landed ? Math.min(1, sinceLanding * 5) : smoothstep(0.85, 1, travel) * 0.5;
         card.flash.material.opacity = landed ? Math.max(0, 0.9 - sinceLanding * 1.4) : 0;
       }

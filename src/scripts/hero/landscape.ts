@@ -25,7 +25,7 @@ interface Ripple {
 export interface Landscape {
   points: Points;
   ripple(x: number, z: number, time: number, big: boolean): void;
-  update(time: number, glow: number): void;
+  update(time: number, glow: number, sink: number): void;
 }
 
 export function createLandscape(): Landscape {
@@ -89,7 +89,9 @@ export function createLandscape(): Landscape {
       ripples.push({ x, z, startedAt: time, amplitude: big ? BIG_RIPPLE_AMPLITUDE : RIPPLE_AMPLITUDE });
       if (ripples.length > MAX_RIPPLES) ripples.shift();
     },
-    update(time, glow) {
+    update(time, glow, sink) {
+      points.position.y = GROUND_Y - sink * 1.6;
+      material.opacity = 0.95 * (1 - sink * 0.85);
       for (let i = ripples.length - 1; i >= 0; i--) {
         if (time - ripples[i].startedAt > RIPPLE_LIFETIME) ripples.splice(i, 1);
       }

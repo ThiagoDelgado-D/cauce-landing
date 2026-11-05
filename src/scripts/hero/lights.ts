@@ -59,7 +59,7 @@ const additive = (map: Texture) =>
 
 export interface Lights {
   glow: number;
-  update(assembly: number): void;
+  update(assembly: number, handoff: number): void;
 }
 
 export function createLights(scene: Scene, windowGroup: Group): Lights {
@@ -100,12 +100,12 @@ export function createLights(scene: Scene, windowGroup: Group): Lights {
 
   const lights: Lights = {
     glow: 0,
-    update(assembly) {
+    update(assembly, handoff) {
       const glow = smoothstep(0.15, 0.7, assembly);
       lights.glow = glow;
-      horizon.material.opacity = glow;
-      rim.material.opacity = (0.35 + 0.65 * smoothstep(0.6, 1, assembly)) * glow;
-      reflection.material.opacity = glow * 0.9;
+      horizon.material.opacity = glow * (1 - handoff * 0.6);
+      rim.material.opacity = (0.35 + 0.65 * smoothstep(0.6, 1, assembly)) * glow * (1 - handoff * 0.7);
+      reflection.material.opacity = glow * 0.9 * (1 - handoff);
       reflection.position.x = windowGroup.position.x;
     },
   };
