@@ -3,21 +3,69 @@ import { hero } from '../content/copy';
 ---
 
 <section id="hero" class="hero" aria-labelledby="hero-headline">
-  <div class="hero-copy">
-    <h1 id="hero-headline">{hero.headline}</h1>
-    <p class="subline">{hero.subline}</p>
-    <a class="button-primary download" href={hero.downloadHref}>{hero.downloadLabel}</a>
+  <div class="hero-stage">
+    <canvas class="hero-canvas" aria-hidden="true"></canvas>
+    <div class="hero-copy">
+      <h1 id="hero-headline">{hero.headline}</h1>
+      <p class="subline">{hero.subline}</p>
+      <a class="button-primary download" href={hero.downloadHref}>{hero.downloadLabel}</a>
+    </div>
   </div>
 </section>
 
+<script>
+  const section = document.getElementById('hero');
+  const canvas = section?.querySelector<HTMLCanvasElement>('.hero-canvas');
+
+  if (section && canvas) {
+    const observer = new IntersectionObserver(async ([entry]) => {
+      if (!entry?.isIntersecting) return;
+      observer.disconnect();
+      const { mountHeroScene } = await import('../scripts/hero-scene');
+      if (mountHeroScene(canvas)) section.dataset.scene = 'ready';
+    });
+    observer.observe(section);
+  }
+</script>
+
 <style>
   .hero {
+    position: relative;
+  }
+
+  .hero[data-scene='ready'] {
+    height: 340vh;
+  }
+
+  .hero-stage {
+    position: relative;
     max-width: var(--content-max);
     margin: 0 auto;
     padding: clamp(56px, 12vh, 128px) var(--gutter) clamp(48px, 10vh, 112px);
   }
 
+  .hero[data-scene='ready'] .hero-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    max-width: none;
+  }
+
+  .hero-canvas {
+    display: none;
+  }
+
+  .hero[data-scene='ready'] .hero-canvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
   .hero-copy {
+    position: relative;
     display: grid;
     justify-items: center;
     gap: 20px;
@@ -44,5 +92,11 @@ import { hero } from '../content/copy';
     margin-top: 8px;
     padding: 12px 22px;
     font-size: 1rem;
+  }
+
+  @media (max-width: 759px) {
+    .hero[data-scene='ready'] {
+      height: 220vh;
+    }
   }
 </style>
