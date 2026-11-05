@@ -95,7 +95,7 @@ export function createLights(scene: Scene, windowGroup: Group): Lights {
     ),
   );
   reflection.rotation.x = -Math.PI / 2;
-  reflection.position.set(0, GROUND_Y + 0.02, 0.2);
+  reflection.position.set(0, GROUND_Y + 0.02, -1.6);
   scene.add(reflection);
 
   const lights: Lights = {

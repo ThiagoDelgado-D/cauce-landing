@@ -4,7 +4,7 @@ import { palette } from './palette';
 const COLUMNS = 170;
 const ROWS = 56;
 const WIDTH = 26;
-const NEAR_Z = 0.2;
+const NEAR_Z = -0.4;
 const FAR_Z = -13;
 export const GROUND_Y = -2.7;
 const DIM_BRIGHTNESS = 0.55;
