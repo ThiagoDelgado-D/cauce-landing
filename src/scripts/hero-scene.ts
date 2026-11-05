@@ -1,16 +1,16 @@
 import { PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three';
 import { createAppWindow, windowHeight, windowLayout } from './hero/app-window';
 import { createStudyCards } from './hero/cards';
-import { GROUND_Y, createLandscape } from './hero/landscape';
+import { createLandscape } from './hero/landscape';
 import { createLights } from './hero/lights';
 import { clamp01, easeOutCubic } from './hero/motion';
 import { palette } from './hero/palette';
 import { createHeroProgress } from './hero/progress';
 
-const COPY_GAP_PX = 28;
-const BOTTOM_MARGIN_PX = 24;
-const MAX_WIDTH_SHARE = 0.86;
-const GROUND_CLEARANCE = 0.15;
+const COPY_GAP_PX = 32;
+const BELOW_FOLD_SHARE = 0.2;
+const WIDE_WIDTH_SHARE = 0.62;
+const NARROW_WIDTH_SHARE = 0.86;
 const RESTING_TILT = -0.12;
 const LYING_TILT = -0.95;
 const RISE_DROP = 1.8;
@@ -55,11 +55,12 @@ export function mountHeroScene(
   const placeWindow = (height: number) => {
     const copyBottom = copy.getBoundingClientRect().bottom - canvas.getBoundingClientRect().top;
     const top = worldYAt(copyBottom + COPY_GAP_PX, height);
-    const bottom = Math.max(worldYAt(height - BOTTOM_MARGIN_PX, height), GROUND_Y + GROUND_CLEARANCE);
+    const bottom = worldYAt(height * (1 + BELOW_FOLD_SHARE), height);
     const visibleWidth = 2 * Math.tan((camera.fov * Math.PI) / 360) * camera.position.z * camera.aspect;
+    const widthShare = camera.aspect > 1.2 ? WIDE_WIDTH_SHARE : NARROW_WIDTH_SHARE;
     const scale = Math.min(
       (top - bottom) / windowHeight,
-      (visibleWidth * MAX_WIDTH_SHARE) / windowLayout.width,
+      (visibleWidth * widthShare) / windowLayout.width,
     );
     rest.scale = scale;
     rest.y = top - (windowHeight * scale) / 2;
