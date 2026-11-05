@@ -1,6 +1,6 @@
 import { PerspectiveCamera, Scene, WebGLRenderer } from 'three';
-
-const BACKGROUND = 0x0b0c09;
+import { createLandscape } from './hero/landscape';
+import { palette } from './hero/palette';
 
 export function mountHeroScene(canvas: HTMLCanvasElement): boolean {
   let renderer: WebGLRenderer;
@@ -11,12 +11,15 @@ export function mountHeroScene(canvas: HTMLCanvasElement): boolean {
   }
 
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.setClearColor(BACKGROUND, 1);
+  renderer.setClearColor(palette.background, 1);
 
   const scene = new Scene();
   const camera = new PerspectiveCamera(32, 1, 0.1, 80);
   camera.position.set(0, 0.45, 10);
   camera.lookAt(0, -0.3, 0);
+
+  const landscape = createLandscape();
+  scene.add(landscape.points);
 
   const resize = () => {
     const { clientWidth: width, clientHeight: height } = canvas;
@@ -28,6 +31,9 @@ export function mountHeroScene(canvas: HTMLCanvasElement): boolean {
   new ResizeObserver(resize).observe(canvas);
   resize();
 
-  renderer.setAnimationLoop(() => renderer.render(scene, camera));
+  renderer.setAnimationLoop((milliseconds) => {
+    landscape.update(milliseconds / 1000);
+    renderer.render(scene, camera);
+  });
   return true;
 }
