@@ -1,0 +1,24 @@
+---
+import { footer, site } from '../content/copy';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <span>© {year} {site.name}</span>
+  <a href={site.repositoryUrl}>{footer.repositoryLabel}</a>
+</footer>
+
+<style>
+  .site-footer {
+    display: flex;
+    justify-content: space-between;
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 32px var(--gutter);
+    border-top: 1px solid var(--line);
+    color: var(--ink-dim);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+  }
+</style>
