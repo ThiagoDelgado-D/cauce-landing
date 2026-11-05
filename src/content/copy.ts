@@ -10,12 +10,19 @@ export const header = {
   downloadHref: '#closing',
 };
 
+export const hero = {
+  headline: 'Your study, in one channel.',
+  subline:
+    'Capture what you want to learn, follow a path, focus, and get the next step that fits your energy.',
+  downloadLabel: 'Download',
+  downloadHref: '#closing',
+};
+
 export const footer = {
   repositoryLabel: 'GitHub',
 };
 
 export const sections = [
-  { id: 'hero', label: 'Hero' },
   { id: 'principles', label: 'Principles' },
   { id: 'chapters', label: 'Chapters' },
   { id: 'how-it-works', label: 'How it works' },

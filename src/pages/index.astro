@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import Hero from '../components/Hero.astro';
 import SectionSlot from '../components/SectionSlot.astro';
 import { sections } from '../content/copy';
 ---
@@ -9,6 +10,7 @@ import { sections } from '../content/copy';
 <Base>
   <SiteHeader />
   <main>
+    <Hero />
     {sections.map((section) => <SectionSlot id={section.id} label={section.label} />)}
   </main>
   <SiteFooter />

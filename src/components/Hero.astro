@@ -1,0 +1,48 @@
+---
+import { hero } from '../content/copy';
+---
+
+<section id="hero" class="hero" aria-labelledby="hero-headline">
+  <div class="hero-copy">
+    <h1 id="hero-headline">{hero.headline}</h1>
+    <p class="subline">{hero.subline}</p>
+    <a class="button-primary download" href={hero.downloadHref}>{hero.downloadLabel}</a>
+  </div>
+</section>
+
+<style>
+  .hero {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: clamp(56px, 12vh, 128px) var(--gutter) clamp(48px, 10vh, 112px);
+  }
+
+  .hero-copy {
+    display: grid;
+    justify-items: center;
+    gap: 20px;
+    max-width: 44rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: clamp(2.25rem, 5.5vw, 4.25rem);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .subline {
+    max-width: 46ch;
+    color: var(--ink-dim);
+    font-size: clamp(1rem, 1.6vw, 1.125rem);
+    text-wrap: pretty;
+  }
+
+  .download {
+    margin-top: 8px;
+    padding: 12px 22px;
+    font-size: 1rem;
+  }
+</style>
