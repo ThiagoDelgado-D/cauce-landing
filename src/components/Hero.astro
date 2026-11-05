@@ -23,7 +23,7 @@ import { hero } from '../content/copy';
       if (!entry?.isIntersecting) return;
       observer.disconnect();
       const { mountHeroScene } = await import('../scripts/hero-scene');
-      if (mountHeroScene(canvas, copy)) section.dataset.scene = 'ready';
+      if (mountHeroScene(section, canvas, copy)) section.dataset.scene = 'ready';
     });
     observer.observe(section);
   }

@@ -24,7 +24,22 @@ export const heroWindow = {
   title: 'Today',
   context: 'Thursday · medium energy · 50 min free',
   emptyList: 'waiting for what you capture',
-};
+  rows: [
+    { title: 'Clean Code, ch. 4', kind: 'book', module: 'capture', meta: '40 min' },
+    { title: 'DSA: graphs', kind: 'path', module: 'path', meta: '3 of 9' },
+    { title: '25 min · DSA', kind: 'focus', module: 'focus', meta: 'today' },
+    { title: 'Docker crash course', kind: 'video', module: 'capture', meta: '1 h 10' },
+    { title: 'Deploy a VPS', kind: 'path', module: 'path', meta: '1 of 6' },
+    { title: 'Article: event loop', kind: 'article', module: 'capture', meta: '12 min' },
+  ],
+  idealMatch: {
+    card: 'Next: graphs, ch. 2',
+    label: 'IDEAL MATCH',
+    title: 'Graphs, ch. 2',
+    reason: '25 min · fits medium energy',
+    action: 'Start focus',
+  },
+} as const;
 
 export const footer = {
   repositoryLabel: 'GitHub',
