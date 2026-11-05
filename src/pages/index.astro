@@ -1,10 +1,15 @@
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Cauce</title>
-  </head>
-  <body>
-    <main>Cauce</main>
-  </body>
-</html>
+---
+import Base from '../layouts/Base.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import SectionSlot from '../components/SectionSlot.astro';
+import { sections } from '../content/copy';
+---
+
+<Base>
+  <SiteHeader />
+  <main>
+    {sections.map((section) => <SectionSlot id={section.id} label={section.label} />)}
+  </main>
+  <SiteFooter />
+</Base>

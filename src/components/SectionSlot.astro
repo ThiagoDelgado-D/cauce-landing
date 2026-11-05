@@ -1,0 +1,32 @@
+---
+interface Props {
+  id: string;
+  label: string;
+}
+
+const { id, label } = Astro.props;
+---
+
+<section id={id} class="section-slot" aria-label={label}>
+  <span class="slot-label">{label}</span>
+</section>
+
+<style>
+  .section-slot {
+    display: grid;
+    place-items: center;
+    min-height: 60vh;
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 64px var(--gutter);
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .slot-label {
+    color: var(--ink-dim);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+</style>

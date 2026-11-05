@@ -1,0 +1,39 @@
+:root {
+  --surface-base: #12130f;
+  --surface-inset: #0b0c09;
+  --surface-raised: #1a1c17;
+  --surface-overlay: #21241d;
+
+  --ink-strong: #f2efe6;
+  --ink-body: #e4e0d3;
+  --ink-dim: #9d9787;
+
+  --line: #2c2f27;
+  --line-strong: #3d4137;
+
+  --accent: #7ec9a3;
+  --accent-hover: color-mix(in oklab, var(--accent) 85%, white);
+  --energy-medium: #dcae55;
+  --energy-high: #e88a63;
+  --info: #8fb2d6;
+
+  --wash-1: rgba(126, 201, 163, 0.1);
+  --wash-2: rgba(220, 174, 85, 0.08);
+  --wash-3: rgba(232, 138, 99, 0.07);
+
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.4), 0 14px 34px -20px rgba(0, 0, 0, 0.9);
+  --shadow-lift: 0 2px 6px rgba(0, 0, 0, 0.45), 0 30px 60px -30px rgba(0, 0, 0, 1);
+
+  --font-display: "Fraunces Variable", ui-serif, Georgia, serif;
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --gutter: clamp(16px, 4vw, 48px);
+  --content-max: 1200px;
+
+  color-scheme: dark;
+}
