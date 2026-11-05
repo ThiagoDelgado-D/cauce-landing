@@ -2,6 +2,7 @@ import { PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three';
 import { createAppWindow, windowHeight, windowLayout } from './hero/app-window';
 import { createStudyCards } from './hero/cards';
 import { createLandscape } from './hero/landscape';
+import { createLights } from './hero/lights';
 import { clamp01, easeOutCubic } from './hero/motion';
 import { palette } from './hero/palette';
 import { createHeroProgress } from './hero/progress';
@@ -40,6 +41,7 @@ export function mountHeroScene(
   const appWindow = createAppWindow();
   scene.add(appWindow.group);
   const cards = createStudyCards(scene, appWindow.group);
+  const lights = createLights(scene, appWindow.group);
   const progress = createHeroProgress(section);
   const rest = { y: 0, scale: 1 };
 
@@ -99,7 +101,8 @@ export function mountHeroScene(
     progress.update(now, delta);
     placeRisingWindow(progress.assembly);
     cards.update(progress.assembly, time);
-    landscape.update(time);
+    lights.update(progress.assembly);
+    landscape.update(time, lights.glow);
     renderer.render(scene, camera);
   });
   return true;

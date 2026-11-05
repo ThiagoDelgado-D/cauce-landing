@@ -6,12 +6,12 @@ const ROWS = 56;
 const WIDTH = 26;
 const NEAR_Z = 0.2;
 const FAR_Z = -13;
-const GROUND_Y = -2.7;
-const RESTING_BRIGHTNESS = 0.75;
+export const GROUND_Y = -2.7;
+const DIM_BRIGHTNESS = 0.55;
 
 export interface Landscape {
   points: Points;
-  update(time: number): void;
+  update(time: number, glow: number): void;
 }
 
 export function createLandscape(): Landscape {
@@ -42,7 +42,13 @@ export function createLandscape(): Landscape {
     }
   }
 
-  for (let i = 0; i < baseColors.length; i++) colors[i] = baseColors[i] * RESTING_BRIGHTNESS;
+  let appliedGlow = -1;
+  const applyGlow = (glow: number) => {
+    const brightness = DIM_BRIGHTNESS + (1 - DIM_BRIGHTNESS) * glow;
+    for (let i = 0; i < baseColors.length; i++) colors[i] = baseColors[i] * brightness;
+    geometry.attributes.color.needsUpdate = true;
+    appliedGlow = glow;
+  };
 
   const geometry = new BufferGeometry();
   geometry.setAttribute('position', new BufferAttribute(positions, 3));
@@ -56,12 +62,15 @@ export function createLandscape(): Landscape {
     depthWrite: false,
   });
 
+  applyGlow(0);
+
   const points = new Points(geometry, material);
   points.position.y = GROUND_Y;
 
   return {
     points,
-    update(time) {
+    update(time, glow) {
+      if (Math.abs(glow - appliedGlow) > 0.002) applyGlow(glow);
       for (let index = 0; index < count; index++) {
         const x = positions[index * 3];
         const z = positions[index * 3 + 2];
