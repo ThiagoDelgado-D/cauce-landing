@@ -32,6 +32,7 @@ import { hero } from '../content/copy';
 <style>
   .hero {
     position: relative;
+    margin-top: calc(-1 * var(--header-height));
   }
 
   .hero[data-scene='ready'] {
@@ -42,7 +43,8 @@ import { hero } from '../content/copy';
     position: relative;
     max-width: var(--content-max);
     margin: 0 auto;
-    padding: clamp(56px, 12vh, 128px) var(--gutter) clamp(48px, 10vh, 112px);
+    padding: calc(var(--header-height) + clamp(56px, 12vh, 128px)) var(--gutter)
+      clamp(48px, 10vh, 112px);
   }
 
   .hero[data-scene='ready'] .hero-stage {
