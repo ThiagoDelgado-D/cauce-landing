@@ -3,8 +3,10 @@ import { header, site } from '../content/copy';
 ---
 
 <header class="site-header">
-  <a class="wordmark" href="/">{site.name}</a>
-  <a class="button-primary" href={header.downloadHref}>{header.downloadLabel}</a>
+  <div class="site-header-inner">
+    <a class="wordmark" href="/">{site.name}</a>
+    <a class="button-primary" href={header.downloadHref}>{header.downloadLabel}</a>
+  </div>
 </header>
 
 <style>
@@ -12,15 +14,19 @@ import { header, site } from '../content/copy';
     position: sticky;
     top: 0;
     z-index: 10;
+    height: var(--header-height);
+    background: color-mix(in oklab, var(--surface-base) 70%, transparent);
+    backdrop-filter: blur(8px);
+  }
+
+  .site-header-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    height: 100%;
     max-width: var(--content-max);
     margin: 0 auto;
-    height: var(--header-height);
     padding: 0 var(--gutter);
-    background: color-mix(in oklab, var(--surface-base) 85%, transparent);
-    backdrop-filter: blur(8px);
   }
 
   .wordmark {
