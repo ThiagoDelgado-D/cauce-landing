@@ -18,6 +18,14 @@ export const hero = {
   downloadHref: '#closing',
 };
 
+export const heroWindow = {
+  appName: 'Cauce',
+  navigation: ['Today', 'Library', 'Paths', 'Focus', 'Recommend', 'Settings'],
+  title: 'Today',
+  context: 'Thursday · medium energy · 50 min free',
+  emptyList: 'waiting for what you capture',
+};
+
 export const footer = {
   repositoryLabel: 'GitHub',
 };

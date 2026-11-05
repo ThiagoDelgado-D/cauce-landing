@@ -16,13 +16,14 @@ import { hero } from '../content/copy';
 <script>
   const section = document.getElementById('hero');
   const canvas = section?.querySelector<HTMLCanvasElement>('.hero-canvas');
+  const copy = section?.querySelector<HTMLElement>('.hero-copy');
 
-  if (section && canvas) {
+  if (section && canvas && copy) {
     const observer = new IntersectionObserver(async ([entry]) => {
       if (!entry?.isIntersecting) return;
       observer.disconnect();
       const { mountHeroScene } = await import('../scripts/hero-scene');
-      if (mountHeroScene(canvas)) section.dataset.scene = 'ready';
+      if (mountHeroScene(canvas, copy)) section.dataset.scene = 'ready';
     });
     observer.observe(section);
   }
