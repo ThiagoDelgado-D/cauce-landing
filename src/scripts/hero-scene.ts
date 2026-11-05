@@ -1,7 +1,7 @@
 import { PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three';
 import { createAppWindow, windowHeight, windowLayout } from './hero/app-window';
 import { createStudyCards } from './hero/cards';
-import { createLandscape } from './hero/landscape';
+import { GROUND_Y, createLandscape } from './hero/landscape';
 import { createLights } from './hero/lights';
 import { clamp01, easeOutCubic } from './hero/motion';
 import { palette } from './hero/palette';
@@ -11,6 +11,7 @@ const COPY_GAP_PX = 32;
 const BELOW_FOLD_SHARE = 0.2;
 const WIDE_WIDTH_SHARE = 0.62;
 const NARROW_WIDTH_SHARE = 0.86;
+const RIPPLE_INTERVAL_MS = 140;
 const RESTING_TILT = -0.12;
 const LYING_TILT = -0.95;
 const RISE_DROP = 1.8;
@@ -93,12 +94,41 @@ export function mountHeroScene(
     resize();
   });
 
+  const pointer = new Vector3();
+  const groundPoint = (event: PointerEvent): Vector3 | null => {
+    const bounds = canvas.getBoundingClientRect();
+    pointer
+      .set(((event.clientX - bounds.left) / bounds.width) * 2 - 1, -((event.clientY - bounds.top) / bounds.height) * 2 + 1, 0.5)
+      .unproject(camera)
+      .sub(camera.position)
+      .normalize();
+    if (pointer.y > -0.01) return null;
+    return camera.position.clone().addScaledVector(pointer, (GROUND_Y - camera.position.y) / pointer.y);
+  };
+
+  let clock = 0;
+  let lastRipple = 0;
+  const stage = canvas.parentElement ?? canvas;
+  stage.addEventListener('pointermove', (event) => {
+    const now = performance.now();
+    if (now - lastRipple < RIPPLE_INTERVAL_MS) return;
+    const point = groundPoint(event);
+    if (!point) return;
+    landscape.ripple(point.x, point.z, clock, false);
+    lastRipple = now;
+  });
+  stage.addEventListener('pointerdown', (event) => {
+    const point = groundPoint(event);
+    if (point) landscape.ripple(point.x, point.z, clock, true);
+  });
+
   let previous = performance.now();
   renderer.setAnimationLoop((milliseconds) => {
     const now = performance.now();
     const delta = Math.min(0.05, (now - previous) / 1000);
     previous = now;
     const time = milliseconds / 1000;
+    clock = time;
 
     progress.update(now, delta);
     placeRisingWindow(progress.assembly);

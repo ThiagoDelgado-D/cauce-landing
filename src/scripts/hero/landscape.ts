@@ -8,9 +8,23 @@ const NEAR_Z = -0.4;
 const FAR_Z = -13;
 export const GROUND_Y = -2.7;
 const DIM_BRIGHTNESS = 0.55;
+const MAX_RIPPLES = 8;
+const RIPPLE_LIFETIME = 4;
+const RIPPLE_SPEED = 2.6;
+const RIPPLE_WIDTH = 0.18;
+const RIPPLE_AMPLITUDE = 0.32;
+const BIG_RIPPLE_AMPLITUDE = 0.75;
+
+interface Ripple {
+  x: number;
+  z: number;
+  startedAt: number;
+  amplitude: number;
+}
 
 export interface Landscape {
   points: Points;
+  ripple(x: number, z: number, time: number, big: boolean): void;
   update(time: number, glow: number): void;
 }
 
@@ -67,19 +81,53 @@ export function createLandscape(): Landscape {
   const points = new Points(geometry, material);
   points.position.y = GROUND_Y;
 
+  const ripples: Ripple[] = [];
+
   return {
     points,
+    ripple(x, z, time, big) {
+      ripples.push({ x, z, startedAt: time, amplitude: big ? BIG_RIPPLE_AMPLITUDE : RIPPLE_AMPLITUDE });
+      if (ripples.length > MAX_RIPPLES) ripples.shift();
+    },
     update(time, glow) {
-      if (Math.abs(glow - appliedGlow) > 0.002) applyGlow(glow);
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        if (time - ripples[i].startedAt > RIPPLE_LIFETIME) ripples.splice(i, 1);
+      }
+      const rippling = ripples.length > 0;
+      if (!rippling && Math.abs(glow - appliedGlow) > 0.002) applyGlow(glow);
+      const brightness = DIM_BRIGHTNESS + (1 - DIM_BRIGHTNESS) * glow;
+
       for (let index = 0; index < count; index++) {
         const x = positions[index * 3];
         const z = positions[index * 3 + 2];
-        positions[index * 3 + 1] =
+        let y =
           Math.sin(x * 0.5 + time * 0.35) * 0.2 +
           Math.cos(z * 0.6 - time * 0.28) * 0.16 +
           Math.sin((x + z) * 0.27 + time * 0.18) * 0.1;
+
+        if (rippling) {
+          let lift = 0;
+          for (const ripple of ripples) {
+            const age = time - ripple.startedAt;
+            const offset = Math.hypot(x - ripple.x, z - ripple.z) - age * RIPPLE_SPEED;
+            const wave =
+              ripple.amplitude * Math.exp(-age * 0.9) * Math.exp(-(offset * offset) / RIPPLE_WIDTH) * Math.cos(offset * 5);
+            y += wave;
+            lift += Math.abs(wave);
+          }
+          const lit = brightness + Math.min(0.9, lift * 2.2);
+          colors[index * 3] = baseColors[index * 3] * lit;
+          colors[index * 3 + 1] = baseColors[index * 3 + 1] * lit;
+          colors[index * 3 + 2] = baseColors[index * 3 + 2] * lit;
+        }
+        positions[index * 3 + 1] = y;
       }
+
       geometry.attributes.position.needsUpdate = true;
+      if (rippling) {
+        geometry.attributes.color.needsUpdate = true;
+        appliedGlow = -1;
+      }
     },
   };
 }
