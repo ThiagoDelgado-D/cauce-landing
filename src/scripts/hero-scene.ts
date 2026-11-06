@@ -24,11 +24,7 @@ const LYING_TILT = -0.95;
 const RISE_DROP = 1.8;
 const RISE_DEPTH = 0.6;
 
-export function mountHeroScene(
-  section: HTMLElement,
-  canvas: HTMLCanvasElement,
-  copy: HTMLElement,
-): boolean {
+export function mountHeroScene(section: HTMLElement, canvas: HTMLCanvasElement, copy: HTMLElement): boolean {
   let renderer: WebGLRenderer;
   try {
     renderer = new WebGLRenderer({ canvas, antialias: true });
@@ -63,7 +59,11 @@ export function mountHeroScene(
 
   const ray = new Vector3();
   const worldYAt = (pixelY: number, height: number) => {
-    ray.set(0, 1 - (pixelY / height) * 2, 0.5).unproject(camera).sub(camera.position).normalize();
+    ray
+      .set(0, 1 - (pixelY / height) * 2, 0.5)
+      .unproject(camera)
+      .sub(camera.position)
+      .normalize();
     return camera.position.y + ray.y * (-camera.position.z / ray.z);
   };
 
@@ -73,10 +73,7 @@ export function mountHeroScene(
     const bottom = worldYAt(height * (1 + BELOW_FOLD_SHARE), height);
     const visibleWidth = 2 * Math.tan((camera.fov * Math.PI) / 360) * camera.position.z * camera.aspect;
     const widthShare = camera.aspect > 1.2 ? WIDE_WIDTH_SHARE : NARROW_WIDTH_SHARE;
-    const scale = Math.min(
-      (top - bottom) / windowHeight,
-      (visibleWidth * widthShare) / windowLayout.width,
-    );
+    const scale = Math.min((top - bottom) / windowHeight, (visibleWidth * widthShare) / windowLayout.width);
     rest.scale = scale;
     rest.y = top - (windowHeight * scale) / 2;
     filled.scale = Math.min(
@@ -129,7 +126,11 @@ export function mountHeroScene(
   const groundPoint = (event: PointerEvent): Vector3 | null => {
     const bounds = canvas.getBoundingClientRect();
     pointer
-      .set(((event.clientX - bounds.left) / bounds.width) * 2 - 1, -((event.clientY - bounds.top) / bounds.height) * 2 + 1, 0.5)
+      .set(
+        ((event.clientX - bounds.left) / bounds.width) * 2 - 1,
+        -((event.clientY - bounds.top) / bounds.height) * 2 + 1,
+        0.5,
+      )
       .unproject(camera)
       .sub(camera.position)
       .normalize();

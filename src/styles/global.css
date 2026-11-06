@@ -1,5 +1,5 @@
-@import "./fonts.css";
-@import "./tokens.css";
+@import './fonts.css';
+@import './tokens.css';
 
 *,
 *::before,
@@ -85,7 +85,9 @@ svg {
   color: var(--surface-inset);
   font-weight: 600;
   text-decoration: none;
-  transition: filter 150ms ease, transform 100ms ease;
+  transition:
+    filter 150ms ease,
+    transform 100ms ease;
 }
 
 .button-primary:hover {
