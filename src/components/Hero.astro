@@ -23,8 +23,12 @@ import { hero } from '../content/copy';
     const observer = new IntersectionObserver(async ([entry]) => {
       if (!entry?.isIntersecting) return;
       observer.disconnect();
-      const { mountHeroScene } = await import('../scripts/hero-scene');
-      section.dataset.scene = mountHeroScene(section, canvas, copy) ? 'ready' : 'still';
+      try {
+        const { mountHeroScene } = await import('../scripts/hero-scene');
+        section.dataset.scene = mountHeroScene(section, canvas, copy) ? 'ready' : 'still';
+      } catch {
+        section.dataset.scene = 'still';
+      }
     });
     observer.observe(section);
   }
