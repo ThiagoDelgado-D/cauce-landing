@@ -5,6 +5,7 @@ import { hero } from '../content/copy';
 <section id="hero" class="hero" aria-labelledby="hero-headline">
   <div class="hero-stage">
     <canvas class="hero-canvas" aria-hidden="true"></canvas>
+    <img class="hero-still" src="/hero-still.webp" alt="" width="1440" height="900" loading="lazy" decoding="async" />
     <div class="hero-copy">
       <h1 id="hero-headline">{hero.headline}</h1>
       <p class="subline">{hero.subline}</p>
@@ -23,7 +24,7 @@ import { hero } from '../content/copy';
       if (!entry?.isIntersecting) return;
       observer.disconnect();
       const { mountHeroScene } = await import('../scripts/hero-scene');
-      if (mountHeroScene(section, canvas, copy)) section.dataset.scene = 'ready';
+      section.dataset.scene = mountHeroScene(section, canvas, copy) ? 'ready' : 'still';
     });
     observer.observe(section);
   }
@@ -37,6 +38,26 @@ import { hero } from '../content/copy';
 
   .hero[data-scene='ready'] {
     height: 340vh;
+  }
+
+  .hero-still {
+    display: none;
+  }
+
+  .hero[data-scene='still'] .hero-stage {
+    min-height: 100vh;
+    min-height: 100dvh;
+    max-width: none;
+  }
+
+  .hero[data-scene='still'] .hero-still {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
   }
 
   .hero-stage {
