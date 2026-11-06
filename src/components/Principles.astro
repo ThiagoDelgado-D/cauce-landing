@@ -152,4 +152,16 @@ import { principles } from '../content/copy';
     border-radius: 50%;
     background: var(--tone);
   }
+
+  @media (max-width: 859px) {
+    .principle {
+      grid-template-columns: 32px minmax(0, 1fr);
+      gap: 16px 16px;
+      align-items: baseline;
+    }
+
+    .pillar {
+      grid-column: 2;
+    }
+  }
 </style>
