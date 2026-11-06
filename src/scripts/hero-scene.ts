@@ -16,6 +16,7 @@ const FILLED_WIDTH_SHARE = 0.88;
 const FILLED_HEIGHT_SHARE = 0.8;
 const COPY_LIFT_PX = 60;
 const SMALL_SCREEN = '(max-width: 759px)';
+const REDUCED_MOTION = '(prefers-reduced-motion: reduce)';
 const WIDE_CAMERA_DISTANCE = 10;
 const NARROW_CAMERA_DISTANCE = 13;
 const RESTING_TILT = -0.12;
@@ -36,6 +37,7 @@ export function mountHeroScene(
   }
 
   const small = window.matchMedia(SMALL_SCREEN).matches;
+  const still = window.matchMedia(REDUCED_MOTION).matches;
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, small ? 1.5 : 2));
   renderer.setClearColor(palette.background, 1);
 
@@ -54,7 +56,8 @@ export function mountHeroScene(
   scene.add(appWindow.group);
   const cards = createStudyCards(scene, appWindow.group);
   const lights = createLights(scene, appWindow.group);
-  const progress = createHeroProgress(section);
+  const progress = createHeroProgress(section, still);
+  if (still) cards.settle();
   const rest = { y: 0, scale: 1 };
   const filled = { y: 0, scale: 1 };
 
@@ -137,25 +140,27 @@ export function mountHeroScene(
   let clock = 0;
   let lastRipple = 0;
   const stage = canvas.parentElement ?? canvas;
-  stage.addEventListener('pointermove', (event) => {
-    const now = performance.now();
-    if (now - lastRipple < RIPPLE_INTERVAL_MS) return;
-    const point = groundPoint(event);
-    if (!point) return;
-    landscape.ripple(point.x, point.z, clock, false);
-    lastRipple = now;
-  });
-  stage.addEventListener('pointerdown', (event) => {
-    const point = groundPoint(event);
-    if (point) landscape.ripple(point.x, point.z, clock, true);
-  });
+  if (!still) {
+    stage.addEventListener('pointermove', (event) => {
+      const now = performance.now();
+      if (now - lastRipple < RIPPLE_INTERVAL_MS) return;
+      const point = groundPoint(event);
+      if (!point) return;
+      landscape.ripple(point.x, point.z, clock, false);
+      lastRipple = now;
+    });
+    stage.addEventListener('pointerdown', (event) => {
+      const point = groundPoint(event);
+      if (point) landscape.ripple(point.x, point.z, clock, true);
+    });
+  }
 
   let previous = performance.now();
   const frame = (milliseconds: number) => {
     const now = performance.now();
     const delta = Math.min(0.05, (now - previous) / 1000);
     previous = now;
-    const time = milliseconds / 1000;
+    const time = still ? 0 : milliseconds / 1000;
     clock = time;
 
     progress.update(now, delta);

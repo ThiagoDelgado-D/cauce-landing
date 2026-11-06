@@ -11,7 +11,7 @@ export interface HeroProgress {
   update(nowMs: number, deltaSeconds: number): void;
 }
 
-export function createHeroProgress(section: HTMLElement): HeroProgress {
+export function createHeroProgress(section: HTMLElement, still: boolean): HeroProgress {
   const introStart = performance.now();
   let assembled = false;
 
@@ -25,6 +25,11 @@ export function createHeroProgress(section: HTMLElement): HeroProgress {
     assembly: 0,
     handoff: 0,
     update(nowMs, deltaSeconds) {
+      if (still) {
+        progress.assembly = 1;
+        progress.handoff = smoothstep(HANDOFF_SCROLL_START, 1, scrolled());
+        return;
+      }
       const intro = clamp01((nowMs - introStart) / INTRO_MS);
       const scroll = scrolled();
       let target = INTRO_SHARE * (1 - Math.pow(1 - intro, 2)) + (1 - INTRO_SHARE) * clamp01(scroll / ASSEMBLY_SCROLL_END);

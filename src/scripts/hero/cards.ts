@@ -191,13 +191,14 @@ interface Card {
   landingScale: number;
   start: number;
   drift: number;
-  landedAt: number;
+  landedAt: number | null;
   redraw: () => void;
 }
 
 export interface StudyCards {
   setSpread(spread: number): void;
   update(assembly: number, time: number, handoff: number): void;
+  settle(): void;
   redraw(): void;
 }
 
@@ -254,7 +255,7 @@ export function createStudyCards(scene: Scene, windowGroup: Group): StudyCards {
       landingScale: fit * (isIdeal ? 0.7 : 1),
       start: FIRST_START + index * START_STEP,
       drift: random() * Math.PI * 2,
-      landedAt: -1,
+      landedAt: null,
       redraw: () => {
         filledTexture.image = target.draw();
         filledTexture.needsUpdate = true;
@@ -287,15 +288,20 @@ export function createStudyCards(scene: Scene, windowGroup: Group): StudyCards {
         card.card.scale.setScalar(1 + (card.landingScale * windowScale - 1) * eased);
 
         const landed = travel >= 0.999;
-        if (landed && card.landedAt < 0) card.landedAt = time;
-        if (!landed) card.landedAt = -1;
-        const sinceLanding = landed ? time - card.landedAt : 0;
+        if (!landed) card.landedAt = null;
+        else card.landedAt ??= time;
+        const sinceLanding = card.landedAt === null ? 0 : time - card.landedAt;
 
         card.card.material.opacity = landed ? Math.max(0, 1 - sinceLanding * 5) : 1;
         card.card.visible = card.card.material.opacity > 0.01 && handoff < 0.02;
         card.filled.material.opacity = landed ? Math.min(1, sinceLanding * 5) : smoothstep(0.85, 1, travel) * 0.5;
         card.flash.material.opacity = landed ? Math.max(0, 0.9 - sinceLanding * 1.4) : 0;
       }
+    },
+    settle() {
+      cards.forEach((card) => {
+        card.landedAt = Number.NEGATIVE_INFINITY;
+      });
     },
     redraw() {
       cards.forEach((card) => card.redraw());
