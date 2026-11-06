@@ -1,0 +1,212 @@
+---
+import { principles } from '../content/copy';
+---
+
+<section id="principles" class="principles" aria-labelledby="principles-heading">
+  <div class="principles-inner">
+    <header class="principles-header">
+      <div class="principles-title">
+        <p class="eyebrow">{principles.eyebrow}</p>
+        <h2 id="principles-heading">{principles.heading}</h2>
+      </div>
+      <p class="aside">{principles.aside}</p>
+    </header>
+
+    <ol class="principle-list">
+      {principles.items.map((item, index) => (
+        <li class="principle" data-tone={item.tone}>
+          <span class="number">{String(index + 1).padStart(2, '0')}</span>
+          <p class="statement">
+            <span class="lead">{item.lead}</span> <span class="rest">{item.rest}</span>
+          </p>
+          <div class="pillar">
+            <p class="note">{item.note}</p>
+            {item.today && <p class="today">Today in Cauce: {item.today}</p>}
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<script>
+  const section = document.getElementById('principles');
+  const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (section && !calm && 'IntersectionObserver' in window) {
+    section.dataset.reveal = 'pending';
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.classList.add('is-revealed');
+          observer.unobserve(entry.target);
+        }
+      },
+      { rootMargin: '0px 0px -15% 0px' },
+    );
+    section.querySelectorAll('.principle').forEach((principle) => observer.observe(principle));
+  }
+</script>
+
+<style>
+  .principles {
+    background: var(--surface-inset);
+    border-block: 1px solid var(--line);
+  }
+
+  .principles-inner {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: clamp(80px, 12vw, 120px) var(--gutter);
+  }
+
+  .principles-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px 48px;
+    margin-bottom: 40px;
+  }
+
+  .principles-title {
+    display: grid;
+    gap: 10px;
+  }
+
+  .eyebrow {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    max-width: 20ch;
+    font-size: clamp(1.875rem, 3.4vw, 2.5rem);
+    text-wrap: balance;
+  }
+
+  .aside {
+    max-width: 34ch;
+    color: var(--ink-dim);
+    font-size: 0.9375rem;
+  }
+
+  .principle-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .principle {
+    --tone: var(--accent);
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr) minmax(0, 320px);
+    gap: 40px;
+    align-items: center;
+    padding: 28px 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .principle[data-tone='ochre'] {
+    --tone: var(--energy-medium);
+  }
+
+  .principle[data-tone='ember'] {
+    --tone: var(--energy-high);
+  }
+
+  .principle[data-tone='info'] {
+    --tone: var(--info);
+  }
+
+  .number {
+    color: var(--tone);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+  }
+
+  .statement {
+    color: var(--ink-strong);
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 300;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  .rest {
+    display: block;
+    color: var(--ink-dim);
+  }
+
+  .pillar {
+    display: grid;
+    gap: 6px;
+    padding-left: 24px;
+    border-left: 1px solid var(--line);
+  }
+
+  .note {
+    color: var(--ink-dim);
+    font-size: 0.9375rem;
+  }
+
+  .today {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    color: var(--ink-body);
+    font-size: 0.8125rem;
+  }
+
+  .today::before {
+    content: '';
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--tone);
+  }
+
+  .principles[data-reveal] :is(.number, .lead, .rest, .pillar) {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity 600ms ease,
+      transform 600ms ease;
+  }
+
+  .principles[data-reveal] .rest {
+    transition-delay: 150ms;
+  }
+
+  .principles[data-reveal] .pillar {
+    transition-delay: 300ms;
+  }
+
+  .principles[data-reveal] .is-revealed :is(.number, .lead, .rest, .pillar) {
+    opacity: 1;
+    transform: none;
+  }
+
+  .lead {
+    display: block;
+  }
+
+  @media (max-width: 859px) {
+    .principle {
+      grid-template-columns: 32px minmax(0, 1fr);
+      gap: 16px 16px;
+      align-items: baseline;
+    }
+
+    .pillar {
+      grid-column: 2;
+    }
+  }
+</style>

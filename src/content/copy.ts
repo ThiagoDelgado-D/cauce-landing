@@ -40,13 +40,49 @@ export const heroWindow = {
   },
 } as const;
 
+export const principles = {
+  eyebrow: 'Ground rules',
+  heading: 'Four rules I build Cauce by.',
+  aside: "If a new feature breaks one, it doesn't ship.",
+  items: [
+    {
+      lead: 'One thing to study next.',
+      rest: 'Picked for right now, from what you saved.',
+      note: "Open the app and there's one suggestion waiting. Start it or skip it.",
+      today: 'Ideal Match',
+      tone: 'ochre',
+    },
+    {
+      lead: "It asks how you're doing.",
+      rest: 'Then picks something that fits.',
+      note: 'Low energy and twenty free minutes gets you a short article, not chapter nine.',
+      today: 'daily calibration',
+      tone: 'ember',
+    },
+    {
+      lead: 'Only real study time counts.',
+      rest: 'False starts get dropped.',
+      note: "There are no streaks to keep alive, so there's nothing to fake.",
+      today: 'focus log',
+      tone: 'pine',
+    },
+    {
+      lead: 'Your notes are yours.',
+      rest: 'And the code is out in the open.',
+      note: 'Cauce is open source, so you can read exactly what it does with your data.',
+      today: 'public on GitHub',
+      tone: 'info',
+    },
+  ],
+} as const;
+
 export const footer = {
   repositoryLabel: 'GitHub',
 };
 
 export const sections = [
-  { id: 'principles', label: 'Principles' },
   { id: 'chapters', label: 'Chapters' },
+  { id: 'principles', label: 'Principles' },
   { id: 'how-it-works', label: 'How it works' },
   { id: 'capture', label: 'Capture' },
   { id: 'bento', label: 'Bento' },
