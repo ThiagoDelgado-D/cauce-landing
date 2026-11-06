@@ -114,7 +114,10 @@ export function createLandscape(sparse: boolean): Landscape {
             const age = time - ripple.startedAt;
             const offset = Math.hypot(x - ripple.x, z - ripple.z) - age * RIPPLE_SPEED;
             const wave =
-              ripple.amplitude * Math.exp(-age * 0.9) * Math.exp(-(offset * offset) / RIPPLE_WIDTH) * Math.cos(offset * 5);
+              ripple.amplitude *
+              Math.exp(-age * 0.9) *
+              Math.exp(-(offset * offset) / RIPPLE_WIDTH) *
+              Math.cos(offset * 5);
             y += wave;
             lift += Math.abs(wave);
           }

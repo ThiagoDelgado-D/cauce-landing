@@ -11,7 +11,9 @@ import { sections } from '../content/copy';
   <SiteHeader />
   <main>
     <Hero />
-    {sections.map((section) => <SectionSlot id={section.id} label={section.label} />)}
+    {sections.map((section) => (
+      <SectionSlot id={section.id} label={section.label} />
+    ))}
   </main>
   <SiteFooter />
 </Base>

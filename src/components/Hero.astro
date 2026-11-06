@@ -9,7 +9,9 @@ import { hero } from '../content/copy';
     <div class="hero-copy">
       <h1 id="hero-headline">{hero.headline}</h1>
       <p class="subline">{hero.subline}</p>
-      <a class="button-primary download" href={hero.downloadHref}>{hero.downloadLabel}</a>
+      <a class="button-primary download" href={hero.downloadHref}>
+        {hero.downloadLabel}
+      </a>
     </div>
   </div>
 </section>
@@ -68,8 +70,7 @@ import { hero } from '../content/copy';
     position: relative;
     max-width: var(--content-max);
     margin: 0 auto;
-    padding: calc(var(--header-height) + clamp(32px, 7vh, 88px)) var(--gutter)
-      clamp(48px, 10vh, 112px);
+    padding: calc(var(--header-height) + clamp(32px, 7vh, 88px)) var(--gutter) clamp(48px, 10vh, 112px);
   }
 
   .hero[data-scene='ready'] .hero-stage {

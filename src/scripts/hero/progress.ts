@@ -32,7 +32,8 @@ export function createHeroProgress(section: HTMLElement, still: boolean): HeroPr
       }
       const intro = clamp01((nowMs - introStart) / INTRO_MS);
       const scroll = scrolled();
-      let target = INTRO_SHARE * (1 - Math.pow(1 - intro, 2)) + (1 - INTRO_SHARE) * clamp01(scroll / ASSEMBLY_SCROLL_END);
+      let target =
+        INTRO_SHARE * (1 - Math.pow(1 - intro, 2)) + (1 - INTRO_SHARE) * clamp01(scroll / ASSEMBLY_SCROLL_END);
       if (scroll >= ASSEMBLY_SCROLL_END || target >= 0.999) assembled = true;
       if (assembled) target = 1;
       const rate = scroll >= ASSEMBLY_SCROLL_END ? 12 : 6;

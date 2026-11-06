@@ -1,12 +1,4 @@
-import {
-  AdditiveBlending,
-  Group,
-  Mesh,
-  MeshBasicMaterial,
-  PlaneGeometry,
-  Scene,
-  type Texture,
-} from 'three';
+import { AdditiveBlending, Group, Mesh, MeshBasicMaterial, PlaneGeometry, Scene, type Texture } from 'three';
 import { canvasTexture } from './canvas';
 import { windowHeight, windowLayout } from './app-window';
 import { GROUND_Y } from './landscape';
