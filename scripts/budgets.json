@@ -1,0 +1,8 @@
+{
+  "files": [
+    { "name": "Hero island loader", "pattern": "^Hero\\.astro.*\\.js$", "maxGzipKb": 5 },
+    { "name": "Hero scene with three.js", "pattern": "^hero-scene\\..*\\.js$", "maxGzipKb": 150 },
+    { "name": "Page CSS", "pattern": "\\.css$", "maxGzipKb": 24 }
+  ],
+  "otherScriptMaxGzipKb": 20
+}
