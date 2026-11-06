@@ -1,8 +1,8 @@
 import { BufferAttribute, BufferGeometry, Color, Points, PointsMaterial } from 'three';
 import { palette } from './palette';
 
-const COLUMNS = 170;
-const ROWS = 56;
+const DENSE = { columns: 170, rows: 56 };
+const SPARSE = { columns: 110, rows: 36 };
 const WIDTH = 26;
 const NEAR_Z = -0.4;
 const FAR_Z = -13;
@@ -28,7 +28,8 @@ export interface Landscape {
   update(time: number, glow: number, sink: number): void;
 }
 
-export function createLandscape(): Landscape {
+export function createLandscape(sparse: boolean): Landscape {
+  const { columns: COLUMNS, rows: ROWS } = sparse ? SPARSE : DENSE;
   const count = COLUMNS * ROWS;
   const positions = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);

@@ -15,6 +15,9 @@ const RIPPLE_INTERVAL_MS = 140;
 const FILLED_WIDTH_SHARE = 0.88;
 const FILLED_HEIGHT_SHARE = 0.8;
 const COPY_LIFT_PX = 60;
+const SMALL_SCREEN = '(max-width: 759px)';
+const WIDE_CAMERA_DISTANCE = 10;
+const NARROW_CAMERA_DISTANCE = 13;
 const RESTING_TILT = -0.12;
 const LYING_TILT = -0.95;
 const RISE_DROP = 1.8;
@@ -32,15 +35,19 @@ export function mountHeroScene(
     return false;
   }
 
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  const small = window.matchMedia(SMALL_SCREEN).matches;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, small ? 1.5 : 2));
   renderer.setClearColor(palette.background, 1);
 
   const scene = new Scene();
   const camera = new PerspectiveCamera(32, 1, 0.1, 80);
-  camera.position.set(0, 0.45, 10);
-  camera.lookAt(0, -0.3, 0);
+  const aimCamera = () => {
+    camera.position.set(0, 0.45, camera.aspect < 0.8 ? NARROW_CAMERA_DISTANCE : WIDE_CAMERA_DISTANCE);
+    camera.lookAt(0, -0.3, 0);
+  };
+  aimCamera();
 
-  const landscape = createLandscape();
+  const landscape = createLandscape(small);
   scene.add(landscape.points);
 
   const appWindow = createAppWindow();
@@ -100,7 +107,9 @@ export function mountHeroScene(
     if (!width || !height) return;
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
+    aimCamera();
     camera.updateProjectionMatrix();
+    camera.updateMatrixWorld();
     placeWindow(height);
   };
   new ResizeObserver(resize).observe(canvas);
@@ -142,7 +151,7 @@ export function mountHeroScene(
   });
 
   let previous = performance.now();
-  renderer.setAnimationLoop((milliseconds) => {
+  const frame = (milliseconds: number) => {
     const now = performance.now();
     const delta = Math.min(0.05, (now - previous) / 1000);
     previous = now;
@@ -156,6 +165,15 @@ export function mountHeroScene(
     lights.update(progress.assembly, progress.handoff);
     landscape.update(time, lights.glow, progress.handoff);
     renderer.render(scene, camera);
-  });
+  };
+
+  new IntersectionObserver(([entry]) => {
+    if (entry?.isIntersecting) {
+      previous = performance.now();
+      renderer.setAnimationLoop(frame);
+    } else {
+      renderer.setAnimationLoop(null);
+    }
+  }).observe(section);
   return true;
 }
