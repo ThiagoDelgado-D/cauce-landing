@@ -119,7 +119,7 @@ export function mountHeroScene(
   new ResizeObserver(resize).observe(copy);
   resize();
 
-  document.fonts?.ready.then(() => {
+  void document.fonts?.ready.then(() => {
     appWindow.redraw();
     cards.redraw();
     resize();
