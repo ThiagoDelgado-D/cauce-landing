@@ -45,8 +45,8 @@ export const footer = {
 };
 
 export const sections = [
-  { id: 'principles', label: 'Principles' },
   { id: 'chapters', label: 'Chapters' },
+  { id: 'principles', label: 'Principles' },
   { id: 'how-it-works', label: 'How it works' },
   { id: 'capture', label: 'Capture' },
   { id: 'bento', label: 'Bento' },
