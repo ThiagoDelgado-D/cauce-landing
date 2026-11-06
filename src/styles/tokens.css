@@ -34,6 +34,7 @@
 
   --gutter: clamp(16px, 4vw, 48px);
   --content-max: 1200px;
+  --header-height: 72px;
 
   color-scheme: dark;
 }

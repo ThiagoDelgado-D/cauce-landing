@@ -1,0 +1,130 @@
+---
+import { hero } from '../content/copy';
+---
+
+<section id="hero" class="hero" aria-labelledby="hero-headline">
+  <div class="hero-stage">
+    <canvas class="hero-canvas" aria-hidden="true"></canvas>
+    <img class="hero-still" src="/hero-still.webp" alt="" width="1440" height="900" loading="lazy" decoding="async" />
+    <div class="hero-copy">
+      <h1 id="hero-headline">{hero.headline}</h1>
+      <p class="subline">{hero.subline}</p>
+      <a class="button-primary download" href={hero.downloadHref}>{hero.downloadLabel}</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  const section = document.getElementById('hero');
+  const canvas = section?.querySelector<HTMLCanvasElement>('.hero-canvas');
+  const copy = section?.querySelector<HTMLElement>('.hero-copy');
+
+  if (section && canvas && copy) {
+    const observer = new IntersectionObserver(async ([entry]) => {
+      if (!entry?.isIntersecting) return;
+      observer.disconnect();
+      try {
+        const { mountHeroScene } = await import('../scripts/hero-scene');
+        section.dataset.scene = mountHeroScene(section, canvas, copy) ? 'ready' : 'still';
+      } catch {
+        section.dataset.scene = 'still';
+      }
+    });
+    observer.observe(section);
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    margin-top: calc(-1 * var(--header-height));
+  }
+
+  .hero[data-scene='ready'] {
+    height: 340vh;
+  }
+
+  .hero-still {
+    display: none;
+  }
+
+  .hero[data-scene='still'] .hero-stage {
+    min-height: 100vh;
+    min-height: 100dvh;
+    max-width: none;
+  }
+
+  .hero[data-scene='still'] .hero-still {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .hero-stage {
+    position: relative;
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: calc(var(--header-height) + clamp(32px, 7vh, 88px)) var(--gutter)
+      clamp(48px, 10vh, 112px);
+  }
+
+  .hero[data-scene='ready'] .hero-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    max-width: none;
+  }
+
+  .hero-canvas {
+    display: none;
+  }
+
+  .hero[data-scene='ready'] .hero-canvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero-copy {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 16px;
+    max-width: 44rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: clamp(2.25rem, 5.5vw, 4.25rem);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .subline {
+    max-width: 46ch;
+    color: var(--ink-dim);
+    font-size: clamp(1rem, 1.6vw, 1.125rem);
+    text-wrap: pretty;
+  }
+
+  .download {
+    margin-top: 8px;
+    padding: 12px 22px;
+    font-size: 1rem;
+  }
+
+  @media (max-width: 759px) {
+    .hero[data-scene='ready'] {
+      height: 220vh;
+    }
+  }
+</style>
